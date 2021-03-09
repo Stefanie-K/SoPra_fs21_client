@@ -1,7 +1,10 @@
 import React from "react";
 import styled from "styled-components";
 
-const Container = styled.div`
+export const Container = styled.button`
+  &:hover {
+    transform: translateY(-2px);
+  }
   margin: 6px 0;
   width: 280px;
   padding: 10px;
@@ -9,6 +12,9 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   border: 1px solid #ffffff26;
+  cursor: ${props => (props.disabled ? "default" : "pointer")};
+  opacity: ${props => (props.disabled ? 0.4 : 1)};
+  transition: all 0.3s ease;
 `;
 
 const UserName = styled.div`
