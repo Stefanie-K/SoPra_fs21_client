@@ -39,11 +39,11 @@ class Game extends React.Component {
     this.props.history.push('/login');
   }
 
-  async redirects() {
+  /*async redirects() {
     //redirects
-    this.setState({ redirect: "/login" });
+    this.setState({ redirect: "/playerProfile" });
     console.log("REDIRECTING")
-  }
+  }*/
 
   async componentDidMount() {
     try {
@@ -72,10 +72,14 @@ class Game extends React.Component {
 
 
   render() {
-    if (this.state.redirect) {
+    /*if (this.state.redirect) {
       this.logout()
-      return <Redirect to={this.state.redirect} />
-    }
+      console.log("REDIRECTING 2")
+      return <Redirect to={{
+        pathname: this.state.redirect,
+        state: {users: this.state.users}
+      }} />
+    }*/
     return (
       <Container>
         <h2>Welcome!</h2>
@@ -84,14 +88,22 @@ class Game extends React.Component {
           <Spinner />
         ) : (
           <div>
-            <Users
-                onClick={() => {
-                  this.redirects();
-                }}
-            >
+            <Users>
               {this.state.users.map(user => {
                 return (
-                  <PlayerContainer key={user.id}>
+                  <PlayerContainer
+                      onClick={() => {
+                        //this.props.history.push('/playerProfile')
+                        //}}
+                        // maybe also works: this.props.history.push('/template', {response: response.data})
+                        this.props.history.push({
+                          pathname: '/playerProfile',
+                          state: {
+                            user: user
+                          }
+                        })
+                      }}
+                      key={user.id}>
                     <Player
                         user={user}
                     />
