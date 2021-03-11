@@ -182,5 +182,6 @@ class PlayerProfile extends React.Component {
     );
   }
 }
+//add comment for testing git
 
 export default withRouter(PlayerProfile);
