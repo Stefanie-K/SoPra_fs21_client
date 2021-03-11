@@ -168,7 +168,6 @@ class PlayerProfile extends React.Component {
                   <Label2>{this.state.user.status}</Label2>
                   <Label>Creation Date</Label>
                   <Label2>{this.state.user.dateCreated}</Label2>
-
                   <Label>Birth Date</Label>
                   <Button
                       width="25%"
