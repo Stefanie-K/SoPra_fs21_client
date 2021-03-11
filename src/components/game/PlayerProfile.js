@@ -119,8 +119,51 @@ class PlayerProfile extends React.Component {
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />
     }
-    console.log("IN PLAYERPROFILE RENDER")
-    this.state.user = this.props.location.state.user
+    //setting the user data
+    this.state.user = this.props.location.state.user;
+    //if user looking at his own profile
+    if (localStorage.getItem('token')==(this.state.user.token)){
+      //if user has not set birthdate yet
+      if (this.state.user.birthdate == null) {
+        return (
+            <BaseContainer>
+              <FormContainer>
+                <Form>
+                  <Label>Username</Label>
+                  <Label2>{this.state.user.username}</Label2>
+                  <Label>Online Status</Label>
+                  <Label2>{this.state.user.status}</Label2>
+                  <Label>Creation Date</Label>
+                  <Label2>{this.state.user.dateCreated}</Label2>
+                  <Label>Birth Date</Label>
+                  <Button
+                      width="25%"
+                  >Add Birth Date</Button>
+                </Form>
+              </FormContainer>
+            </BaseContainer>
+        );
+      }
+      //if user has already set birthdate
+      else {
+        return (
+            <BaseContainer>
+              <FormContainer>
+                <Form>
+                  <Label>Username</Label>
+                  <Label2>{this.state.user.username}</Label2>
+                  <Label>Online Status</Label>
+                  <Label2>{this.state.user.status}</Label2>
+                  <Label>Creation Date</Label>
+                  <Label2>{this.state.user.dateCreated}</Label2>
+                  <Label>Birth Date</Label>
+                  <Button>{this.state.user.birthdate}</Button>
+                </Form>
+              </FormContainer>
+            </BaseContainer>
+        );
+      }}
+    //if user is looking at somebody else's profile
     return(
         <BaseContainer>
           <FormContainer>

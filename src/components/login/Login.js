@@ -78,6 +78,7 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
+
 /**
  * Classes in React allow you to have an internal state within the class and to have the React life-cycle for your component.
  * You should have a class (instead of a functional component) when:
@@ -126,6 +127,8 @@ class Login extends React.Component {
 
       // Store the token into the local storage.
       localStorage.setItem('token', user.token);
+      console.log("TEST JONAS: "+ user.token)
+
 
       // Login successfully worked --> navigate to the route /game in the GameRouter
       this.props.history.push(`/game`);
@@ -134,11 +137,7 @@ class Login extends React.Component {
     }
   }
 
-  /**
-   * HTTP POST request is sent to the backend.
-   * If the request is successful, a new user is returned to the front-end
-   * and its token is stored in the localStorage.
-   */
+
   async register() {
     //redirect to register
     this.setState({ redirect: "/register" });
