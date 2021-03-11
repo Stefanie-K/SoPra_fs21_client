@@ -20,6 +20,20 @@ const FormContainer = styled.div`
   justify-content: center;
 `;
 
+const InputField = styled.input`
+  &::placeholder {
+    color: rgba(255, 255, 255, 1.0);
+  }
+  height: 35px;
+  padding-left: 15px;
+  margin-left: -4px;
+  border: none;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+`;
+
 const Label = styled.label`
   color: white;
   margin-bottom: 10px;
@@ -76,28 +90,21 @@ class PlayerProfile extends React.Component {
     this.state = {
       redirect: null,
       user: null,
-      entryFieldON: false
+      editMode: null
     };
   }
 
-  /*displayEntryField = () => {
+  _onButtonClick() {
     this.setState({
-      entryField: !this.state.entryField
-    })
-  }*/
-
-  handleLoginClick() {
-    this.setState({entryFieldON: !this.state.entryFieldON});
+      editMode: true,
+    });
   }
-
 
   async redirects() {
     //redirects
     this.setState({ redirect: "/login" });
     console.log("REDIRECTING")
   }
-
-
 
   async componentDidMount() {
     try {
@@ -126,17 +133,23 @@ class PlayerProfile extends React.Component {
     }
   }
 
-
   render() {
+    //setting the user data
+    this.state.user = this.props.location.state.user;//this.props.user
     if (this.state.redirect) {
       return <Redirect to={this.state.redirect} />
     }
-    //setting the user data
-    this.state.user = this.props.location.state.user;//this.props.user
-    //if user looking at his own profile
-    if (localStorage.getItem('token')==(this.state.user.token)){
+    //birthDateField
+    let birthDateField;
+    if (this.state.editMode) {
+      birthDateField = <InputField placeholder="dd.mm.yyyy"/>
+    } else {
+      birthDateField = <Label2>{this.state.user.birthdate}</Label2>
+    }
+    //if user is looking at his own profile
+    if (localStorage.getItem('token')==(this.state.user.token) && this.state.user.birthdate == null){
       //if user has not set birthdate yet
-      if (this.state.user.birthdate == null && !this.state.entryField) {
+      if (this.state.user.birthdate == null) {
         return (
             <BaseContainer>
               <FormContainer>
@@ -148,41 +161,21 @@ class PlayerProfile extends React.Component {
                   <Label>Creation Date</Label>
                   <Label2>{this.state.user.dateCreated}</Label2>
                   <Label>Birth Date</Label>
+                  {birthDateField}
                   <Button
-                      width="25%"
-                      onClick={this.displ}
-                  >Add Birth Date</Button>
-                </Form>
-              </FormContainer>
-            </BaseContainer>
-        );
-      }
-      if (this.state.user.birthdate == null && this.state.entryField) {
-        return (
-            <BaseContainer>
-              <FormContainer>
-                <Form>
-                  <Label>Username</Label>
-                  <Label2>{this.state.user.username}</Label2>
-                  <Label>Online Status</Label>
-                  <Label2>{this.state.user.status}</Label2>
-                  <Label>Creation Date</Label>
-                  <Label2>{this.state.user.dateCreated}</Label2>
-                  <Label>Birth Date</Label>
-                  <Button
-                      width="25%"
-                      onClick={this.setState({
-                        entryField: !this.state.entryField
-                      })}
-                  >Add Birth Date</Button>
-                  <Label2>entry Field</Label2>
+                      width="50%"
+                      onClick={() => {
+                        this.state.editMode = !this.state.editMode;
+                        this.setState({})
+                      }}
+                  >{this.state.editMode ? 'Submit' : 'Add birth date'}</Button>
                 </Form>
               </FormContainer>
             </BaseContainer>
         );
       }
       //if user has already set birthdate
-      else {
+      if (localStorage.getItem('token')==(this.state.user.token) && !this.state.user.birthdate == null ){
         return (
             <BaseContainer>
               <FormContainer>
