@@ -120,7 +120,7 @@ class PlayerProfile extends React.Component {
       return <Redirect to={this.state.redirect} />
     }
     //setting the user data
-    this.state.user = this.props.location.state.user;
+    this.state.user = this.props.location.state.user;//this.props.user
     //if user looking at his own profile
     if (localStorage.getItem('token')==(this.state.user.token)){
       //if user has not set birthdate yet
