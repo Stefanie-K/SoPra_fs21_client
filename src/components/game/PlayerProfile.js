@@ -75,9 +75,21 @@ class PlayerProfile extends React.Component {
     super();
     this.state = {
       redirect: null,
-      user: null
+      user: null,
+      entryFieldON: false
     };
   }
+
+  /*displayEntryField = () => {
+    this.setState({
+      entryField: !this.state.entryField
+    })
+  }*/
+
+  handleLoginClick() {
+    this.setState({entryFieldON: !this.state.entryFieldON});
+  }
+
 
   async redirects() {
     //redirects
@@ -124,7 +136,7 @@ class PlayerProfile extends React.Component {
     //if user looking at his own profile
     if (localStorage.getItem('token')==(this.state.user.token)){
       //if user has not set birthdate yet
-      if (this.state.user.birthdate == null) {
+      if (this.state.user.birthdate == null && !this.state.entryField) {
         return (
             <BaseContainer>
               <FormContainer>
@@ -138,7 +150,33 @@ class PlayerProfile extends React.Component {
                   <Label>Birth Date</Label>
                   <Button
                       width="25%"
+                      onClick={this.displ}
                   >Add Birth Date</Button>
+                </Form>
+              </FormContainer>
+            </BaseContainer>
+        );
+      }
+      if (this.state.user.birthdate == null && this.state.entryField) {
+        return (
+            <BaseContainer>
+              <FormContainer>
+                <Form>
+                  <Label>Username</Label>
+                  <Label2>{this.state.user.username}</Label2>
+                  <Label>Online Status</Label>
+                  <Label2>{this.state.user.status}</Label2>
+                  <Label>Creation Date</Label>
+                  <Label2>{this.state.user.dateCreated}</Label2>
+
+                  <Label>Birth Date</Label>
+                  <Button
+                      width="25%"
+                      onClick={this.setState({
+                        entryField: !this.state.entryField
+                      })}
+                  >Add Birth Date</Button>
+                  <Label2>entry Field</Label2>
                 </Form>
               </FormContainer>
             </BaseContainer>
@@ -157,7 +195,7 @@ class PlayerProfile extends React.Component {
                   <Label>Creation Date</Label>
                   <Label2>{this.state.user.dateCreated}</Label2>
                   <Label>Birth Date</Label>
-                  <Button>{this.state.user.birthdate}</Button>
+                  <Label2>{this.state.user.birthdate}</Label2>
                 </Form>
               </FormContainer>
             </BaseContainer>
