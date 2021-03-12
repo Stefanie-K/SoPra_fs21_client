@@ -90,9 +90,17 @@ class PlayerProfile extends React.Component {
     this.state = {
       redirect: null,
       user: null,
-      editMode: null
+      editMode: null,
+      value: null
     };
+    this.handleChange = this.handleChange.bind(this);
   }
+
+  handleChange(event) {
+    this.setState({value: event.target.value});
+    console.log("EnteredValue" + this.state.value)
+  }
+
 
   _onButtonClick() {
     this.setState({
@@ -142,7 +150,10 @@ class PlayerProfile extends React.Component {
     //birthDateField
     let birthDateField;
     if (this.state.editMode) {
-      birthDateField = <InputField placeholder="dd.mm.yyyy"/>
+      birthDateField = <InputField
+          type="text"
+          value={this.state.value} onChange={this.handleChange}
+          placeholder="dd.mm.yyyy"/>
     } else {
       birthDateField = <Label2>{this.state.user.birthdate}</Label2>
     }
