@@ -60,29 +60,6 @@ const Form = styled.div`
   transition: opacity 0.5s ease, transform 0.5s ease;
 `;
 
-const Users = styled.ul`
-  list-style: none;
-  padding-left: 0;
-`;
-
-const PlayerContainer = styled.li`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-const SecondPage = props => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.log(location.pathname); // result: '/secondpage'
-    console.log(location.search); // result: '?query=abc'
-    console.log(location.state.detail); // result: 'some_value'
-  }, [location]);
-
-};
-
 class PlayerProfile extends React.Component {
   constructor() {
     console.log("IN PLAYERPROFILE CONSTRUCTOR")
@@ -90,22 +67,34 @@ class PlayerProfile extends React.Component {
     this.state = {
       redirect: null,
       user: null,
+      userID: null,
       editMode: null,
-      value: null
+      value: null,
+      loading: true
     };
-    this.handleChange = this.handleChange.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
+    this.handleOnClick = this.handleOnClick.bind(this)
   }
 
-  handleChange(event) {
-    this.setState({value: event.target.value});
-    console.log("EnteredValue" + this.state.value)
+  handleInputChange(event) {
+      this.setState({value: event.target.value});
+      console.log("value: "+ event.target.value)
+      //DOES THIS CALL COMPONENT DID MOUNT / UDATE?
   }
 
+  handleOnClick(event) {
+    if (this.state.editMode == true && this.state.value != null){
+      this.state.user.birthdate = this.state.value
+      console.log("in on click: set value "+ this.state.value)
+      console.log("in on click: get birthdate value "+ this.state.user.birthdate)
+      this.updateUser()
+      this.setState({})
 
-  _onButtonClick() {
-    this.setState({
-      editMode: true,
-    });
+    } else {
+      this.setState({
+        editMode: true
+      })
+    }
   }
 
   async redirects() {
@@ -114,18 +103,41 @@ class PlayerProfile extends React.Component {
     console.log("REDIRECTING")
   }
 
+  async updateUser() {
+    try {
+      console.log("tries to update User");
+      console.log("in update user get birthdate value: "+ this.state.user.birthdate);
+      const requestBody = JSON.stringify({ //Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
+        id: this.state.user.id, //Mabe also id
+        username: this.state.user.username,
+        birthdate: this.state.user.birthdate
+      });
+      console.log("before PUT");
+      var a = this.state.userID
+      const response = await api.put('/users/'+ a, requestBody);
+      console.log("after PUT of user "+ a + requestBody);
+      this.setState({})
+
+    } catch (error) {
+      //var uID = this.user.userID
+      alert(`Something went wrong in component did update: \n${handleError(error)}`);
+    }
+  }
+
+
   async componentDidMount() {
     try {
       console.log("IN PLAYERPROFILE COMPONENT DID MOUNT")
 
-      const response = await api.get('/users');
-      // delays continuous execution of an async operation for 1 second.
-      // This is just a fake async call, so that the spinner can be displayed
-      // feel free to remove it :)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      var a = this.state.userID
+      const response = await api.get('/users/'+ a);
+
 
       // Get the returned users and update the state.
-      this.setState({ users: response.data });
+      this.setState({
+        user: response.data,
+        loading: false
+      });
 
       // This is just some data for you to see what is available.
       // Feel free to remove it.
@@ -137,90 +149,111 @@ class PlayerProfile extends React.Component {
       // See here to get more data.
       console.log(response);
     } catch (error) {
-      alert(`Something went wrong while fetching the users: \n${handleError(error)}`);
+      //var uID = this.user.userID
+      alert(`Something went wrong while fetching the users with userID X: \n${handleError(error)}`);
     }
   }
 
   render() {
     //setting the user data
-    this.state.user = this.props.location.state.user;//this.props.user
+    //this.state.user = this.props.location.state.user;//this.props.user
+    this.state.userID = this.props.location.state.userID;
+    console.log("Render")
+
     if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />
+      return <Redirect to={this.state.redirect}/>
     }
-    //birthDateField
-    let birthDateField;
-    if (this.state.editMode) {
-      birthDateField = <InputField
-          type="text"
-          value={this.state.value} onChange={this.handleChange}
-          placeholder="dd.mm.yyyy"/>
+    if (this.state.loading == true) {
+      return(<Label>...</Label>)
     } else {
-      birthDateField = <Label2>{this.state.user.birthdate}</Label2>
-    }
-    //if user is looking at his own profile
-    if (localStorage.getItem('token')==(this.state.user.token) && this.state.user.birthdate == null){
-      //if user has not set birthdate yet
-      if (this.state.user.birthdate == null) {
-        return (
-            <BaseContainer>
-              <FormContainer>
-                <Form>
-                  <Label>Username</Label>
-                  <Label2>{this.state.user.username}</Label2>
-                  <Label>Online Status</Label>
-                  <Label2>{this.state.user.status}</Label2>
-                  <Label>Creation Date</Label>
-                  <Label2>{this.state.user.dateCreated}</Label2>
-                  <Label>Birth Date</Label>
-                  {birthDateField}
-                  <Button
-                      width="50%"
-                      onClick={() => {
-                        this.state.editMode = !this.state.editMode;
-                        this.setState({})
-                      }}
-                  >{this.state.editMode ? 'Submit' : 'Add birth date'}</Button>
-                </Form>
-              </FormContainer>
-            </BaseContainer>
-        );
+      //birthDateField
+      let birthDateField;
+      if (this.state.editMode) {
+        birthDateField = <InputField
+            type="text"
+            value={this.state.value} onChange={this.handleInputChange}
+            placeholder="dd.mm.yyyy"/>
+      } else {
+        birthDateField = <Label2>{this.state.user.birthdate}</Label2>
       }
-      //if user has already set birthdate
-      if (localStorage.getItem('token')==(this.state.user.token) && !this.state.user.birthdate == null ){
-        return (
-            <BaseContainer>
-              <FormContainer>
-                <Form>
-                  <Label>Username</Label>
-                  <Label2>{this.state.user.username}</Label2>
-                  <Label>Online Status</Label>
-                  <Label2>{this.state.user.status}</Label2>
-                  <Label>Creation Date</Label>
-                  <Label2>{this.state.user.dateCreated}</Label2>
-                  <Label>Birth Date</Label>
-                  <Label2>{this.state.user.birthdate}</Label2>
-                </Form>
-              </FormContainer>
-            </BaseContainer>
-        );
-      }}
-    //if user is looking at somebody else's profile
-    return(
-        <BaseContainer>
-          <FormContainer>
-            <Form>
-              <Label>Username</Label>
-              <Label2>{this.state.user.username}</Label2>
-              <Label>Online Status</Label>
-              <Label2>{this.state.user.status}</Label2>
-              <Label>Creation Date</Label>
-              <Label2>{this.state.user.dateCreated}</Label2>
-              <Label>Birth Date</Label>
-              <Label2>{this.state.user.birthdate}</Label2>
-            </Form>
-          </FormContainer>
-        </BaseContainer>
-    );
+      //if user is looking at his own profile
+      if (localStorage.getItem('token') == (this.state.user.token) && this.state.user.birthdate == null) {
+        //if user has not set birthdate yet
+        console.log("user has not set birthdate yet: "+ this.state.user.birthdate)
+        if (this.state.user.birthdate == null) {
+          return (
+              <BaseContainer>
+                <FormContainer>
+                  <Form>
+                    <Label>Username</Label>
+                    <Label2>{this.state.user.username}</Label2>
+                    <Label>Online Status</Label>
+                    <Label2>{this.state.user.status}</Label2>
+                    <Label>Creation Date</Label>
+                    <Label2>{this.state.user.dateCreated}</Label2>
+                    <Label>Birth Date</Label>
+                    {birthDateField}
+                    <Button
+                        width="50%"
+                        onClick={this.handleOnClick}
+                    >{this.state.editMode ? 'Submit' : 'Add birth date'}</Button>
+                  </Form>
+                </FormContainer>
+                <Label> </Label>
+                <Button
+                    width="25%"
+                >GO BACK</Button>
+              </BaseContainer>
+          );
+        }
+        //if user has already set birthdate
+        if (localStorage.getItem('token') == (this.state.user.token) && this.state.user.birthdate != null) {
+          return (
+              <BaseContainer>
+                <FormContainer>
+                  <Form>
+                    <Label>Username</Label>
+                    <Label2>{this.state.user.username}</Label2>
+                    <Label>Online Status</Label>
+                    <Label2>{this.state.user.status}</Label2>
+                    <Label>Creation Date</Label>
+                    <Label2>{this.state.user.dateCreated}</Label2>
+                    <Label>Birth Date</Label>
+                    <Label2>{this.state.user.birthdate}</Label2>
+                    <Button
+                        width="50%"
+                        //onClick={this.handleOnClick}
+                    >EDIT</Button>
+                  </Form>
+                </FormContainer>
+                <Button
+                    width="50%"
+                >GO BACK</Button>
+              </BaseContainer>
+          );
+        }
+      }
+      //if user is looking at somebody else's profile
+      return (
+          <BaseContainer>
+            <FormContainer>
+              <Form>
+                <Label>Username</Label>
+                <Label2>{this.state.user.username}</Label2>
+                <Label>Online Status</Label>
+                <Label2>{this.state.user.status}</Label2>
+                <Label>Creation Date</Label>
+                <Label2>{this.state.user.dateCreated}</Label2>
+                <Label>Birth Date</Label>
+                <Label2>{this.state.user.birthdate}</Label2>
+              </Form>
+            </FormContainer>
+            <Button
+                width="50%"
+            >GO BACK</Button>
+          </BaseContainer>
+      );
+    }
   }
 }
 //add comment for testing git

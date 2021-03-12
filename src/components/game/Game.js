@@ -99,7 +99,8 @@ class Game extends React.Component {
                         this.props.history.push({
                           pathname: '/playerProfile',
                           state: {
-                            user: user
+                            user: user,
+                            userID: user.id
                           }
                         })
                       }}
