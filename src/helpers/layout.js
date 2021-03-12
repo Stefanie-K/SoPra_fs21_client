@@ -12,3 +12,4 @@ export const BaseContainer = styled.div`
   padding-right: 15px;
   max-width: ${DESKTOP_WIDTH}px;
 `;
+

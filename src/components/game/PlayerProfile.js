@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BaseContainer } from '../../helpers/layout';
+import {BaseContainer, DESKTOP_WIDTH} from '../../helpers/layout';
 import { api, handleError } from '../../helpers/api';
 import Player from '../../views/Player';
 import { Spinner } from '../../views/design/Spinner';
@@ -11,8 +11,39 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
 
+export const ButtonBack = styled.button`
+  &:hover {
+    transform: translateY(-2px);
+  }
+  justifyContent: 'center',
+  alignSelf: 'center',
+  padding: 60px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 13px;
+  text-align: center;
+  color: rgba(233, 255, 255, 1);
+  width: ${props => props.width || null};
+  height: 35px;
+  border: none;
+  border-radius: 20px;
+  cursor: ${props => (props.disabled ? "default" : "pointer")};
+  opacity: ${props => (props.disabled ? 0.4 : 1)};
+  background: rgb(16, 89, 255);
+  transition: all 0.3s ease;
+`;
+
 const FormContainer = styled.div`
-  margin-top: 2em;
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100px;
+  justify-content: center;
+`;
+
+const FormContainerButton = styled.div`
+  margin-top: 8em;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -99,7 +130,7 @@ class PlayerProfile extends React.Component {
 
   async redirects() {
     //redirects
-    this.setState({ redirect: "/login" });
+    this.setState({ redirect: "/game" });
     console.log("REDIRECTING")
   }
 
@@ -155,14 +186,14 @@ class PlayerProfile extends React.Component {
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect} />
+    }
     //setting the user data
     //this.state.user = this.props.location.state.user;//this.props.user
-    this.state.userID = this.props.location.state.userID;
     console.log("Render")
+    this.state.userID = this.props.location.state.userID;
 
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect}/>
-    }
     if (this.state.loading == true) {
       return(<Label>...</Label>)
     } else {
@@ -199,10 +230,15 @@ class PlayerProfile extends React.Component {
                     >{this.state.editMode ? 'Submit' : 'Add birth date'}</Button>
                   </Form>
                 </FormContainer>
-                <Label> </Label>
-                <Button
+                <Label>...</Label>
+                <FormContainerButton>
+                  <ButtonBack
                     width="25%"
-                >GO BACK</Button>
+                    onClick={() => {
+                    this.redirects();
+                  }}
+                >GO BACK</ButtonBack>
+                </FormContainerButton>
               </BaseContainer>
           );
         }
@@ -226,9 +262,14 @@ class PlayerProfile extends React.Component {
                     >EDIT</Button>
                   </Form>
                 </FormContainer>
-                <Button
-                    width="50%"
-                >GO BACK</Button>
+                <FormContainerButton>
+                  <ButtonBack
+                      width="25%"
+                      onClick={() => {
+                        this.redirects();
+                      }}
+                  >GO BACK</ButtonBack>
+                </FormContainerButton>
               </BaseContainer>
           );
         }
@@ -248,9 +289,14 @@ class PlayerProfile extends React.Component {
                 <Label2>{this.state.user.birthdate}</Label2>
               </Form>
             </FormContainer>
-            <Button
-                width="50%"
-            >GO BACK</Button>
+            <FormContainerButton>
+              <ButtonBack
+                  width="25%"
+                  onClick={() => {
+                    this.redirects();
+                  }}
+              >GO BACK</ButtonBack>
+            </FormContainerButton>
           </BaseContainer>
       );
     }
