@@ -166,7 +166,7 @@ class PlayerProfile extends React.Component {
   async redirects() {
     //redirects
     this.setState({ redirect: "/game" });
-    console.log("REDIRECTING") //test
+    console.log("REDIRECTING") //test for heroku
   }
 
   async updateUser() {
@@ -188,7 +188,7 @@ class PlayerProfile extends React.Component {
 
     } catch (error) {
       //var uID = this.user.userID
-      alert(`Something went wrong in component did update: \n${handleError(error)}`);
+      alert(`Something went wrong in component did update: '\n${handleError(error)}`);
     }
   }
 
