@@ -166,7 +166,7 @@ class PlayerProfile extends React.Component {
   async redirects() {
     //redirects
     this.setState({ redirect: "/game" });
-    console.log("REDIRECTING")
+    console.log("REDIRECTING") //test
   }
 
   async updateUser() {
