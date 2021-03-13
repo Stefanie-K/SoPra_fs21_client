@@ -33,6 +33,35 @@ export const ButtonBack = styled.button`
   transition: all 0.3s ease;
 `;
 
+export const ButtonEdit = styled.button`
+  &:hover {
+    transform: translateY(-2px);
+  }
+  justifyContent: 'right',
+  alignSelf: 'right',
+  padding: 60px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 13px;
+  text-align: center;
+  color: rgba(245,245,245, 1);
+  width: ${props => props.width || null};
+  height: 35px;
+  border: none;
+  border-radius: 20px;
+  cursor: ${props => (props.disabled ? "default" : "pointer")};
+  opacity: ${props => (props.disabled ? 0.4 : 1)};
+  background: rgb(169,169,169);
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+`;
+
+const Label = styled.label`
+  color: white;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+`;
+
 const FormContainer = styled.div`
   margin-top: 1em;
   display: flex;
@@ -65,12 +94,6 @@ const InputField = styled.input`
   color: white;
 `;
 
-const Label = styled.label`
-  color: white;
-  margin-bottom: 10px;
-  text-transform: uppercase;
-`;
-
 const Label2 = styled.label`
   color: pink;
   margin-bottom: 10px;
@@ -101,10 +124,12 @@ class PlayerProfile extends React.Component {
       userID: null,
       editMode: null,
       value: null,
+      changedUsername: null,
       loading: true
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleOnClick = this.handleOnClick.bind(this)
+    this.handleUsernameChange = this.handleUsernameChange.bind(this)
   }
 
   handleInputChange(event) {
@@ -113,11 +138,21 @@ class PlayerProfile extends React.Component {
       //DOES THIS CALL COMPONENT DID MOUNT / UDATE?
   }
 
+  handleUsernameChange(event) {
+    this.setState({changedUsername: event.target.value});
+    console.log("changedUsername: "+ event.target.value)
+    //DOES THIS CALL COMPONENT DID MOUNT / UDATE?
+  }
+
   handleOnClick(event) {
     if (this.state.editMode == true && this.state.value != null){
       this.state.user.birthdate = this.state.value
-      console.log("in on click: set value "+ this.state.value)
-      console.log("in on click: get birthdate value "+ this.state.user.birthdate)
+      console.log("handle on click username: "+ this.state.changedUsername)
+      if (this.state.changedUsername != null){
+        this.state.user.username = this.state.changedUsername
+      }
+      console.log("in on click: set value "+ this.state.value, this.state.changedUsername)
+      console.log("in on click: get birthdate / username value "+ this.state.user.birthdate, this.state.changedUsername)
       this.updateUser()
       this.setState({})
 
@@ -138,8 +173,10 @@ class PlayerProfile extends React.Component {
     try {
       console.log("tries to update User");
       console.log("in update user get birthdate value: "+ this.state.user.birthdate);
+      console.log("in update user get username value: "+ this.state.user.username);
+      console.log("in update user get id value: "+ this.state.user.id);
       const requestBody = JSON.stringify({ //Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
-        id: this.state.user.id, //Mabe also id
+        userID: this.state.user.id,
         username: this.state.user.username,
         birthdate: this.state.user.birthdate
       });
@@ -195,17 +232,23 @@ class PlayerProfile extends React.Component {
     this.state.userID = this.props.location.state.userID;
 
     if (this.state.loading == true) {
-      return(<Label>...</Label>)
+      return(<Label></Label>)
     } else {
       //birthDateField
       let birthDateField;
+      let changeUsernameField;
       if (this.state.editMode) {
         birthDateField = <InputField
             type="text"
             value={this.state.value} onChange={this.handleInputChange}
             placeholder="dd.mm.yyyy"/>
+        changeUsernameField= <InputField
+            type="text"
+            value={this.state.changedUsername} onChange={this.handleUsernameChange}
+            placeholder={this.state.user.username}/>
       } else {
         birthDateField = <Label2>{this.state.user.birthdate}</Label2>
+        changeUsernameField = <Label2>{this.state.user.username}</Label2>
       }
       //if user is looking at his own profile
       if (localStorage.getItem('token') == (this.state.user.token) && this.state.user.birthdate == null) {
@@ -215,19 +258,19 @@ class PlayerProfile extends React.Component {
           return (
               <BaseContainer>
                 <FormContainer>
+                  <ButtonEdit
+                      width="50%"
+                      onClick={this.handleOnClick}
+                  >{this.state.editMode ? 'Submit' : 'EDIT'}</ButtonEdit>
                   <Form>
                     <Label>Username</Label>
-                    <Label2>{this.state.user.username}</Label2>
+                    {changeUsernameField}
                     <Label>Online Status</Label>
                     <Label2>{this.state.user.status}</Label2>
                     <Label>Creation Date</Label>
                     <Label2>{this.state.user.dateCreated}</Label2>
                     <Label>Birth Date</Label>
                     {birthDateField}
-                    <Button
-                        width="50%"
-                        onClick={this.handleOnClick}
-                    >{this.state.editMode ? 'Submit' : 'Add birth date'}</Button>
                   </Form>
                 </FormContainer>
                 <Label>...</Label>
@@ -248,6 +291,13 @@ class PlayerProfile extends React.Component {
               <BaseContainer>
                 <FormContainer>
                   <Form>
+                    <ButtonEdit
+                        variant="contained"
+                        style={{display: 'flex', justifyContent: 'right'}}
+                        className="float-right"
+                        width="50%"
+                        //onClick={this.handleOnClick}
+                    >EDIT</ButtonEdit>
                     <Label>Username</Label>
                     <Label2>{this.state.user.username}</Label2>
                     <Label>Online Status</Label>
@@ -256,10 +306,6 @@ class PlayerProfile extends React.Component {
                     <Label2>{this.state.user.dateCreated}</Label2>
                     <Label>Birth Date</Label>
                     <Label2>{this.state.user.birthdate}</Label2>
-                    <Button
-                        width="50%"
-                        //onClick={this.handleOnClick}
-                    >EDIT</Button>
                   </Form>
                 </FormContainer>
                 <FormContainerButton>
