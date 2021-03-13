@@ -168,7 +168,7 @@ class Register extends React.Component {
                   this.register();
                 }}
               >
-                Register
+                SIGN UP
               </Button>
             </ButtonContainer>
           </Form>

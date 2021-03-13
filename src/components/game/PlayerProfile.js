@@ -54,7 +54,10 @@ export const ButtonEdit = styled.button`
   background: rgb(169,169,169);
   transition: all 0.3s ease;
   margin-bottom: 10px;
-`;
+  float: right;
+  position: right: 0;
+  `;
+
 
 const Label = styled.label`
   color: white;
@@ -69,6 +72,13 @@ const FormContainer = styled.div`
   align-items: center;
   min-height: 100px;
   justify-content: center;
+`;
+
+const Column = styled.div`
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+  min-height: 5px;
 `;
 
 const FormContainerButton = styled.div`
@@ -92,6 +102,7 @@ const InputField = styled.input`
   margin-bottom: 20px;
   background: rgba(255, 255, 255, 0.2);
   color: white;
+  width: 50%;
 `;
 
 const Label2 = styled.label`
@@ -104,9 +115,10 @@ const Form = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 60%;
-  height: 375px;
+  height: 450px;
   font-size: 16px;
   font-weight: 300;
+  padding-top: 37px;
   padding-left: 37px;
   padding-right: 37px;
   border-radius: 5px;
@@ -155,12 +167,10 @@ class PlayerProfile extends React.Component {
       console.log("in on click: get birthdate / username value "+ this.state.user.birthdate, this.state.changedUsername)
       this.updateUser()
       this.setState({})
-
-    } else {
-      this.setState({
-        editMode: true
-      })
     }
+    this.setState({
+        editMode: !this.state.editMode
+      })
   }
 
   async redirects() {
@@ -181,9 +191,8 @@ class PlayerProfile extends React.Component {
         birthdate: this.state.user.birthdate
       });
       console.log("before PUT");
-      var a = this.state.userID
-      const response = await api.put('/users/'+ a, requestBody);
-      console.log("after PUT of user "+ a + requestBody);
+      const response = await api.put('/user', requestBody);
+      console.log("after PUT of user "+ requestBody);
       this.setState({})
 
     } catch (error) {
@@ -251,18 +260,14 @@ class PlayerProfile extends React.Component {
         changeUsernameField = <Label2>{this.state.user.username}</Label2>
       }
       //if user is looking at his own profile
-      if (localStorage.getItem('token') == (this.state.user.token) && this.state.user.birthdate == null) {
+      if (localStorage.getItem('token') == (this.state.user.token)) {
         //if user has not set birthdate yet
-        console.log("user has not set birthdate yet: "+ this.state.user.birthdate)
-        if (this.state.user.birthdate == null) {
+        //if (this.state.user.birthdate == null) {
           return (
               <BaseContainer>
                 <FormContainer>
-                  <ButtonEdit
-                      width="50%"
-                      onClick={this.handleOnClick}
-                  >{this.state.editMode ? 'Submit' : 'EDIT'}</ButtonEdit>
                   <Form>
+                    <Column>
                     <Label>Username</Label>
                     {changeUsernameField}
                     <Label>Online Status</Label>
@@ -271,9 +276,16 @@ class PlayerProfile extends React.Component {
                     <Label2>{this.state.user.dateCreated}</Label2>
                     <Label>Birth Date</Label>
                     {birthDateField}
+                    </Column>
+                    <Column style={{ justifyContent: 'center', alignItems: 'right', flexDirection: 'row', flex: 1}}>
+                      <ButtonEdit
+                          class="right"
+                          width="25%"
+                          onClick={this.handleOnClick}
+                      >{this.state.editMode ? 'Submit' : 'EDIT'}</ButtonEdit>
+                    </Column>
                   </Form>
                 </FormContainer>
-                <Label>...</Label>
                 <FormContainerButton>
                   <ButtonBack
                     width="25%"
@@ -285,41 +297,6 @@ class PlayerProfile extends React.Component {
               </BaseContainer>
           );
         }
-        //if user has already set birthdate
-        if (localStorage.getItem('token') == (this.state.user.token) && this.state.user.birthdate != null) {
-          return (
-              <BaseContainer>
-                <FormContainer>
-                  <Form>
-                    <ButtonEdit
-                        variant="contained"
-                        style={{display: 'flex', justifyContent: 'right'}}
-                        className="float-right"
-                        width="50%"
-                        //onClick={this.handleOnClick}
-                    >EDIT</ButtonEdit>
-                    <Label>Username</Label>
-                    <Label2>{this.state.user.username}</Label2>
-                    <Label>Online Status</Label>
-                    <Label2>{this.state.user.status}</Label2>
-                    <Label>Creation Date</Label>
-                    <Label2>{this.state.user.dateCreated}</Label2>
-                    <Label>Birth Date</Label>
-                    <Label2>{this.state.user.birthdate}</Label2>
-                  </Form>
-                </FormContainer>
-                <FormContainerButton>
-                  <ButtonBack
-                      width="25%"
-                      onClick={() => {
-                        this.redirects();
-                      }}
-                  >GO BACK</ButtonBack>
-                </FormContainerButton>
-              </BaseContainer>
-          );
-        }
-      }
       //if user is looking at somebody else's profile
       return (
           <BaseContainer>

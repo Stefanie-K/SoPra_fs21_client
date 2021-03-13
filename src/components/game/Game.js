@@ -35,6 +35,7 @@ class Game extends React.Component {
   }
 
   logout() {
+    const response = api.put('/user/'+ localStorage.getItem('token'));
     localStorage.removeItem('token');
     this.props.history.push('/login');
   }

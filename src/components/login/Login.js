@@ -35,9 +35,11 @@ const FormRegister = styled.div`
   flex-direction: column;
   justify-content: center;
   width: 60%;
-  height: 100px;
+  height: 125px;
   font-size: 16px;
   font-weight: 300;
+  padding-top: 8px;
+  padding-bottom: 8px;
   padding-left: 37px;
   padding-right: 37px;
   border-radius: 5px;
@@ -66,6 +68,8 @@ const Label = styled.label`
 `;
 
 const LabelSignUp = styled.label`
+  display: flex;
+  justify-content: center;
   color: white;
   float: middle;
   margin-bottom: 10px;
@@ -201,7 +205,7 @@ class Login extends React.Component {
         </FormContainer>
         <FormContainer>
           <FormRegister>
-            <LabelSignUp>Not signed in yet?</LabelSignUp>
+            <LabelSignUp>Not signed up yet?</LabelSignUp>
             <ButtonContainer>
               <Button
                   width="50%"
@@ -209,7 +213,7 @@ class Login extends React.Component {
                     this.register();
                   }}
               >
-                Register
+                SIGN UP
               </Button>
             </ButtonContainer>
           </FormRegister>
