@@ -24,7 +24,7 @@ const UserName = styled.div`
 
 const Name = styled.div`
   font-weight: bold;
-  color: #06c4ff;
+  color: #7E5252;
 `;
 
 const Id = styled.div`

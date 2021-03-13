@@ -9,10 +9,14 @@ import AppRouter from "./components/shared/routers/AppRouter";
 class App extends Component {
   render() {
     return (
-      <div>
+      <div
+          style={{
+              backgroundColor: "#A9A9A9"}}
+      >
         <Header height={"100"} />
-        <AppRouter />
-      </div>
+        <AppRouter/>
+      </div
+      >
     );
   }
 }

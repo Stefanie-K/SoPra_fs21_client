@@ -2,14 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import {BaseContainer, DESKTOP_WIDTH} from '../../helpers/layout';
 import { api, handleError } from '../../helpers/api';
-import Player from '../../views/Player';
-import { Spinner } from '../../views/design/Spinner';
-import { Button, PlayerButton } from '../../views/design/Button';
 import {Redirect, withRouter} from 'react-router-dom';
-
-import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-
 
 export const ButtonBack = styled.button`
   &:hover {
@@ -29,7 +22,7 @@ export const ButtonBack = styled.button`
   border-radius: 20px;
   cursor: ${props => (props.disabled ? "default" : "pointer")};
   opacity: ${props => (props.disabled ? 0.4 : 1)};
-  background: rgb(16, 89, 255);
+  background: rgb(105,105,105);
   transition: all 0.3s ease;
 `;
 
@@ -106,7 +99,7 @@ const InputField = styled.input`
 `;
 
 const Label2 = styled.label`
-  color: pink;
+  color: rgb(216,216,220);
   margin-bottom: 10px;
 `;
 
@@ -122,7 +115,7 @@ const Form = styled.div`
   padding-left: 37px;
   padding-right: 37px;
   border-radius: 5px;
-  background: linear-gradient(rgb(27, 124, 186), rgb(2, 46, 101));
+  background: linear-gradient(rgb(146, 112, 113), rgb(126, 82, 82));
   transition: opacity 0.5s ease, transform 0.5s ease;
 `;
 
@@ -157,11 +150,12 @@ class PlayerProfile extends React.Component {
   }
 
   handleOnClick(event) {
-    if (this.state.editMode == true && this.state.value != null){
-      this.state.user.birthdate = this.state.value
-      console.log("handle on click username: "+ this.state.changedUsername)
+    if (this.state.editMode == true){
       if (this.state.changedUsername != null){
         this.state.user.username = this.state.changedUsername
+      }
+      if (this.state.value != null){
+        this.state.user.birthdate = this.state.value
       }
       console.log("in on click: set value "+ this.state.value, this.state.changedUsername)
       console.log("in on click: get birthdate / username value "+ this.state.user.birthdate, this.state.changedUsername)
@@ -282,7 +276,7 @@ class PlayerProfile extends React.Component {
                           class="right"
                           width="25%"
                           onClick={this.handleOnClick}
-                      >{this.state.editMode ? 'Submit' : 'EDIT'}</ButtonEdit>
+                      >{this.state.editMode ? 'SAVE' : 'EDIT'}</ButtonEdit>
                     </Column>
                   </Form>
                 </FormContainer>
