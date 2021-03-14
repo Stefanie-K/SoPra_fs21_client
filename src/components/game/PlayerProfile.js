@@ -185,7 +185,8 @@ class PlayerProfile extends React.Component {
         birthdate: this.state.user.birthdate
       });
       console.log("before PUT");
-      const response = await api.put('/user', requestBody);
+      var a = this.state.userID
+      const response = await api.put('/users/'+ this.state.userID, requestBody);
       console.log("after PUT of user "+ requestBody);
       this.setState({})
 
@@ -233,6 +234,7 @@ class PlayerProfile extends React.Component {
     //this.state.user = this.props.location.state.user;//this.props.user
     console.log("Render")
     this.state.userID = this.props.location.state.userID;
+    console.log(this.props.location.state.userID)
 
     if (this.state.loading == true) {
       return(<Label></Label>)
@@ -299,7 +301,7 @@ class PlayerProfile extends React.Component {
                 <Label>Username</Label>
                 <Label2>{this.state.user.username}</Label2>
                 <Label>Online Status</Label>
-                <Label2>{this.state.user.status}</Label2>
+                <Label2>OFFLINE</Label2>
                 <Label>Creation Date</Label>
                 <Label2>{this.state.user.dateCreated}</Label2>
                 <Label>Birth Date</Label>

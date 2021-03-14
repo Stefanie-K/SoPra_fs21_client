@@ -114,6 +114,7 @@ class Game extends React.Component {
               })}
             </Users>
             <Button
+                style={{ background: 'rgb(105,105,105)'}}
               width="100%"
               onClick={() => {
                 this.logout();

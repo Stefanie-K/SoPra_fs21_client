@@ -93,7 +93,7 @@ class Register extends React.Component {
         name: this.state.name,
         password: this.state.password
       });
-      const response = await api.post('/users/register', requestBody); //--> I think this leads to Server.UserController.PostMapping/users
+      const response = await api.post('/users', requestBody); //--> I think this leads to Server.UserController.PostMapping/users
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
